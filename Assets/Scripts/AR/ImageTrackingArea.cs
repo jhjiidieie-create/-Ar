@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 [RequireComponent(typeof(ARTrackedImageManager))]
 public class ImageTrackingArea : MonoBehaviour
@@ -26,25 +27,34 @@ public class ImageTrackingArea : MonoBehaviour
 
     void OnImagesChanged(ARTrackedImagesChangedEventArgs args)
     {
-        foreach (var image in args.added)
+        foreach (ARTrackedImage image in args.added)
             CreateArea(image);
 
-        foreach (var image in args.updated)
+        foreach (ARTrackedImage image in args.updated)
         {
-            if (area != null)
-                area.SetActive(image.trackingState == UnityEngine.XR.ARSubsystems.TrackingState.Tracking);
+            if (area != null && image.transform == area.transform.parent)
+                area.SetActive(image.trackingState == TrackingState.Tracking);
+        }
+
+        foreach (ARTrackedImage image in args.removed)
+        {
+            if (area != null && image.transform == area.transform.parent)
+                area.SetActive(false);
         }
     }
 
     void CreateArea(ARTrackedImage image)
     {
-        if (area != null)
+        if (area != null || areaPrefab == null)
             return;
 
         area = Instantiate(areaPrefab, image.transform);
+        area.name = "BuildingArea";
         area.transform.localPosition = Vector3.zero;
-        area.transform.localRotation = Quaternion.identity;
+
+        // AR tracked images lie in local XY; the grid is generated in local XZ.
+        area.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
         area.transform.localScale = Vector3.one;
-        area.SetActive(image.trackingState == UnityEngine.XR.ARSubsystems.TrackingState.Tracking);
+        area.SetActive(image.trackingState == TrackingState.Tracking);
     }
 }
