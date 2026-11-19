@@ -6,7 +6,7 @@ Unity **2022.3.62f3**, Android, AR Foundation.
 
 - Track a printed A4 image with AR Foundation.
 - Attach a construction area to the tracked image.
-- Generate a 21 x 29 grid (1 cm cells) for an A4 portrait marker.
+- Generate a 21 x 23 grid (1 cm cells) over the supplied poster image, printed centered on A4 portrait paper.
 - Tap the surface to place the selected prefab into the nearest grid cell.
 - One construction level only.
 
@@ -27,7 +27,7 @@ The grid is 0.210 x 0.290 m. An A4 portrait sheet is 0.210 x 0.297 m, so the 29 
 7. Create an area prefab with a root object at the marker center. Add **GridManager** to the root.
 8. Add **ImageTrackingArea** to the object with AR Tracked Image Manager and assign the area prefab to its `areaPrefab` field.
 9. Add **BuildingManager** to a scene object and assign the AR Camera. It will find the runtime GridManager when the tracked image creates the area.
-10. Create block prefabs. Their footprint should fit a 1 cm cell (0.01 Unity units) for the current grid scale. Connect UI buttons to `BuildingManager.SelectPrefab(GameObject)`.
+10. Create block prefabs with their pivot at the bottom center. For this initial grid, each cell is 0.01 x 0.01 Unity units (1 cm), so use suitably small test blocks. Connect UI buttons to `BuildingManager.SelectPrefab(GameObject)`.
 11. Set Android orientation to Portrait and build to a supported ARCore device.
 
 ## Scripts
