@@ -39,3 +39,8 @@ The grid is 0.210 x 0.290 m. An A4 portrait sheet is 0.210 x 0.297 m, so the 29 
 ## Current limitations
 
 This is the **first-stage source scaffold**, not a tested APK or a fully configured Unity scene. The marker image, XR Reference Image Library, scene objects, area prefab, and block prefabs still need to be assigned in the Unity Editor. The project has not been compiled in Unity in this environment.
+
+
+## Full Unity source layout
+
+The Unity project source files are mirrored in [`UnityProject/`](./tree/main/UnityProject). The complete ZIP distributed in the ChatGPT conversation also includes the supplied marker image (`Assets/ReferenceImages/DetroitMarker.jpg`). The GitHub source mirror omits that binary image; use the ZIP for a complete ready-to-open project.
