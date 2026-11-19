@@ -37,7 +37,13 @@ public class BuildingManager : MonoBehaviour
 
     void PlaceAt(Vector2 screenPosition)
     {
-        if (selectedPrefab == null || arCamera == null || grid == null)
+        if (selectedPrefab == null || arCamera == null)
+            return;
+
+        if (grid == null)
+            grid = FindObjectOfType<GridManager>();
+
+        if (grid == null)
             return;
 
         Ray ray = arCamera.ScreenPointToRay(screenPosition);
@@ -50,8 +56,11 @@ public class BuildingManager : MonoBehaviour
         if (placed.TryGetValue(cell, out GameObject oldBlock))
             Destroy(oldBlock);
 
-        Vector3 position = grid.GetCellCenter(cell);
-        GameObject block = Instantiate(selectedPrefab, position, grid.transform.rotation, buildingsRoot);
+        if (buildingsRoot == null)
+            buildingsRoot = grid.transform;
+
+        GameObject block = Instantiate(selectedPrefab, grid.GetCellCenter(cell),
+            grid.transform.rotation, buildingsRoot);
         placed[cell] = block;
     }
 }
