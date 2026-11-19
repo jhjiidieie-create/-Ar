@@ -1,0 +1,1 @@
+The actual marker image file (`DetroitMarker.jpg`) is included in the downloadable full project ZIP shared in the ChatGPT conversation. This GitHub source mirror does not store the binary image. When using this folder independently, place the supplied poster image here as `DetroitMarker.jpg` before opening Unity; the editor bootstrap expects this exact path.
