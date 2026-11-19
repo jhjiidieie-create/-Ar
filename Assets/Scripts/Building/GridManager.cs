@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    [Header("A4 portrait: 21 x 29 cells, 1 cm each")]
+    [Header("Tracked poster area: 21 x 23 cells, 1 cm each")]
     [SerializeField] int columns = 21;
-    [SerializeField] int rows = 29;
+    [SerializeField] int rows = 23;
     [SerializeField] float cellSize = 0.01f;
     [SerializeField] float lineThickness = 0.00035f;
     [SerializeField] float surfaceThickness = 0.001f;
