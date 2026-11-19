@@ -1,0 +1,1 @@
+Extract ZIP, add folder in Unity Hub, open with Unity 2022.3.62f3, wait for imports. MainScene is generated automatically. Enable ARCore in Project Settings > XR Plug-in Management > Android. See README.md.
