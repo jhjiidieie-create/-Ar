@@ -15,40 +15,51 @@ public class BuildUIController : MonoBehaviour
 
     public string SelectedItem { get; private set; }
 
+    private void Awake()
+    {
+        ShowGround();
+    }
+
     private void Start()
     {
-        categoryGround.GetComponent<Button>().onClick.AddListener(ShowGround);
-        categoryRoad.GetComponent<Button>().onClick.AddListener(ShowRoad);
-        categoryBuilding.GetComponent<Button>().onClick.AddListener(ShowBuilding);
+        AddButtonListener(categoryGround, ShowGround);
+        AddButtonListener(categoryRoad, ShowRoad);
+        AddButtonListener(categoryBuilding, ShowBuilding);
 
-        itemGround.GetComponent<Button>().onClick.AddListener(() => SelectItem("Ground"));
-        itemAsphalt.GetComponent<Button>().onClick.AddListener(() => SelectItem("Asphalt"));
-        itemRoad.GetComponent<Button>().onClick.AddListener(() => SelectItem("Road"));
+        AddButtonListener(itemGround, () => SelectItem("Ground"));
+        AddButtonListener(itemAsphalt, () => SelectItem("Asphalt"));
+        AddButtonListener(itemRoad, () => SelectItem("Road"));
+    }
 
-        ShowGround();
+    private void AddButtonListener(GameObject target, UnityEngine.Events.UnityAction action)
+    {
+        if (target == null) return;
+
+        Button button = target.GetComponent<Button>();
+        if (button != null) button.onClick.AddListener(action);
     }
 
     private void ShowGround()
     {
-        itemGround.SetActive(true);
-        itemAsphalt.SetActive(false);
-        itemRoad.SetActive(false);
+        if (itemGround != null) itemGround.SetActive(true);
+        if (itemAsphalt != null) itemAsphalt.SetActive(false);
+        if (itemRoad != null) itemRoad.SetActive(false);
         SelectedItem = "";
     }
 
     private void ShowRoad()
     {
-        itemGround.SetActive(false);
-        itemAsphalt.SetActive(true);
-        itemRoad.SetActive(true);
+        if (itemGround != null) itemGround.SetActive(false);
+        if (itemAsphalt != null) itemAsphalt.SetActive(true);
+        if (itemRoad != null) itemRoad.SetActive(true);
         SelectedItem = "";
     }
 
     private void ShowBuilding()
     {
-        itemGround.SetActive(false);
-        itemAsphalt.SetActive(false);
-        itemRoad.SetActive(false);
+        if (itemGround != null) itemGround.SetActive(false);
+        if (itemAsphalt != null) itemAsphalt.SetActive(false);
+        if (itemRoad != null) itemRoad.SetActive(false);
         SelectedItem = "";
     }
 
