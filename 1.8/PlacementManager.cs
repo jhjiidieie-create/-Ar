@@ -8,10 +8,12 @@ public class PlacementManager : MonoBehaviour
 
     public void PlaceObject()
     {
-        if (!selector || !selector.HasSelection || !buildingPrefab)
+        if (!grid || !selector || !selector.HasSelection || !buildingPrefab)
             return;
 
         Vector3 position = grid.GetCellCenter(selector.SelectedCell);
+        position.y += buildingPrefab.transform.localScale.y / 2f;
+
         Instantiate(buildingPrefab, position, Quaternion.identity);
     }
 }
