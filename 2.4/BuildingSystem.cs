@@ -24,7 +24,7 @@ public class BuildingSystem : MonoBehaviour
 
         if (level != BuildLevel.Ground && !data.ground) return false;
         if (level == BuildLevel.Ground && data.ground) return false;
-        if (level == BuildLevel.Decoration && data.decoration) return false;
+        if (level == BuildLevel.Decoration && (data.decoration || data.buildings.Count > 0)) return false;
 
         float heightBelow = GetHeight(data.ground) + GetHeight(data.decoration);
         if (level == BuildLevel.Building)
