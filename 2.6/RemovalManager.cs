@@ -1,23 +1,26 @@
-using UnityEngine;
-
-public class RemovalManager : MonoBehaviour
+namespace ARBuildV26
 {
-    [SerializeField] GridSelector selector;
-    [SerializeField] BuildingSystem buildingSystem;
-
-    void Awake()
+    using UnityEngine;
+    
+    public class RemovalManager : MonoBehaviour
     {
-        if (!buildingSystem)
-            buildingSystem = FindObjectOfType<BuildingSystem>();
-    }
-
-    public void RemoveSelected()
-    {
-        if (!selector || !buildingSystem || selector.SelectedCells.Count == 0) return;
-
-        foreach (Vector2Int cell in selector.SelectedCells)
-            buildingSystem.RemoveTop(cell);
-
-        selector.ClearSelection();
+        [SerializeField] GridSelector selector;
+        [SerializeField] BuildingSystem buildingSystem;
+    
+        void Awake()
+        {
+            if (!buildingSystem)
+                buildingSystem = FindObjectOfType<BuildingSystem>();
+        }
+    
+        public void RemoveSelected()
+        {
+            if (!selector || !buildingSystem || selector.SelectedCells.Count == 0) return;
+    
+            foreach (Vector2Int cell in selector.SelectedCells)
+                buildingSystem.RemoveTop(cell);
+    
+            selector.ClearSelection();
+        }
     }
 }
