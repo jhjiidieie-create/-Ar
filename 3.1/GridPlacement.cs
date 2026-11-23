@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(GridManager))]
 public class GridPlacement : MonoBehaviour
 {
+    public GameObject placementEffect;
+
     private GridManager grid;
 
     private void Awake()
@@ -31,5 +33,12 @@ public class GridPlacement : MonoBehaviour
 
         center.y -= prefab.transform.localScale.y * 0.5f;
         Instantiate(prefab, center, Quaternion.identity, transform);
+
+        if (placementEffect != null)
+        {
+            Vector3 effectPosition = grid.GetCellCenter(x, z);
+            effectPosition.y += 0.001f;
+            Instantiate(placementEffect, effectPosition, Quaternion.identity);
+        }
     }
 }
