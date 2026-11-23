@@ -6,17 +6,21 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public GameObject prefab;
     public GridPlacement placement;
     public GameObject highlightPrefab;
+    public Material validHighlightMaterial;
+    public Material invalidHighlightMaterial;
 
     private GameObject preview;
     private GameObject highlight;
+    private Renderer highlightRenderer;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (prefab == null || placement == null)
+        if (prefab == null || placement == null || highlightPrefab == null)
             return;
 
         preview = Instantiate(prefab);
         highlight = Instantiate(highlightPrefab);
+        highlightRenderer = highlight.GetComponent<Renderer>();
 
         foreach (Collider col in preview.GetComponentsInChildren<Collider>())
             col.enabled = false;
@@ -61,13 +65,18 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
         bool inside = grid.IsInsideGrid(x, z);
-        highlight.SetActive(inside);
+        Vector3 cellCenter = grid.GetCellCenter(x, z);
+        cellCenter.y += 0.006f;
 
-        if (inside)
+        highlight.transform.position = cellCenter;
+        highlight.SetActive(true);
+
+        if (highlightRenderer != null)
         {
-            Vector3 cellCenter = grid.GetCellCenter(x, z);
-            cellCenter.y += 0.006f;
-            highlight.transform.position = cellCenter;
+            Material material = inside ? validHighlightMaterial : invalidHighlightMaterial;
+
+            if (material != null)
+                highlightRenderer.sharedMaterial = material;
         }
     }
 
