@@ -9,6 +9,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public Material validHighlightMaterial;
     public Material invalidHighlightMaterial;
 
+    private GridManager grid;
     private GameObject preview;
     private GameObject highlight;
     private Renderer highlightRenderer;
@@ -16,6 +17,10 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (prefab == null || placement == null || highlightPrefab == null)
+            return;
+
+        grid = placement.GetComponent<GridManager>();
+        if (grid == null)
             return;
 
         preview = Instantiate(prefab);
@@ -35,10 +40,8 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (TryGetPoint(eventData.position, out Vector3 point))
+        if (preview != null && TryGetPoint(eventData.position, out Vector3 point))
         {
-            GridManager grid = placement.GetComponent<GridManager>();
-
             int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
             int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
@@ -62,7 +65,6 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (preview == null || !TryGetPoint(screenPosition, out Vector3 point))
             return;
 
-        GridManager grid = placement.GetComponent<GridManager>();
         int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
         int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
@@ -88,14 +90,12 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         Vector3 cellCenter = grid.GetCellCenter(x, z);
         cellCenter.y += 0.006f;
-
         highlight.transform.position = cellCenter;
         highlight.SetActive(true);
 
         if (highlightRenderer != null)
         {
             Material material = valid ? validHighlightMaterial : invalidHighlightMaterial;
-
             if (material != null)
                 highlightRenderer.sharedMaterial = material;
         }
@@ -105,11 +105,11 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         point = Vector3.zero;
 
-        if (placement == null || Camera.main == null)
+        if (grid == null || Camera.main == null)
             return false;
 
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        Plane plane = new Plane(Vector3.up, placement.transform.position);
+        Plane plane = new Plane(Vector3.up, grid.transform.position);
 
         if (!plane.Raycast(ray, out float distance))
             return false;
