@@ -53,11 +53,8 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 placement.ReplaceCell(x, z, prefab);
         }
 
-        if (preview != null)
-            Destroy(preview);
-
-        if (highlight != null)
-            Destroy(highlight);
+        Destroy(preview);
+        Destroy(highlight);
     }
 
     private void UpdatePreview(Vector2 screenPosition)
