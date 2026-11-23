@@ -39,6 +39,46 @@ public class GridPlacement : MonoBehaviour
         PlayPlacementEffects(x, z);
     }
 
+    public bool CanPlaceBuildingBlock(int x, int z)
+    {
+        return grid.IsInsideGrid(x, z) &&
+               HasObjectAt(x, z, "Ground") &&
+               !HasObjectAt(x, z, "Road") &&
+               !HasObjectAt(x, z, "Decoration");
+    }
+
+    public float GetBuildingPlacementY(int x, int z, GameObject prefab)
+    {
+        float top = grid.GetCellCenter(x, z).y;
+
+        foreach (Transform child in transform)
+        {
+            Vector3 position = child.position;
+
+            if (child.CompareTag("Building") &&
+                Mathf.Abs(position.x - grid.GetCellCenter(x, z).x) < 0.001f &&
+                Mathf.Abs(position.z - grid.GetCellCenter(x, z).z) < 0.001f)
+            {
+                float childTop = position.y + child.localScale.y * 0.5f;
+                top = Mathf.Max(top, childTop);
+            }
+        }
+
+        return top + prefab.transform.localScale.y * 0.5f;
+    }
+
+    public void PlaceBuildingBlock(int x, int z, GameObject prefab)
+    {
+        if (prefab == null || !CanPlaceBuildingBlock(x, z))
+            return;
+
+        Vector3 center = grid.GetCellCenter(x, z);
+        center.y = GetBuildingPlacementY(x, z, prefab);
+
+        Instantiate(prefab, center, Quaternion.identity, transform);
+        PlayPlacementEffects(x, z);
+    }
+
     public void ReplaceCell(int x, int z, GameObject prefab)
     {
         if (prefab == null || !grid.IsInsideGrid(x, z))
