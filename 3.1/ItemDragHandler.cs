@@ -5,8 +5,10 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 {
     public GameObject prefab;
     public GridPlacement placement;
+    public GameObject highlightPrefab;
 
     private GameObject preview;
+    private GameObject highlight;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -14,6 +16,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             return;
 
         preview = Instantiate(prefab);
+        highlight = Instantiate(highlightPrefab);
 
         foreach (Collider col in preview.GetComponentsInChildren<Collider>())
             col.enabled = false;
@@ -40,6 +43,9 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         if (preview != null)
             Destroy(preview);
+
+        if (highlight != null)
+            Destroy(highlight);
     }
 
     private void UpdatePreview(Vector2 screenPosition)
@@ -49,6 +55,20 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         point.y += prefab.transform.localScale.y * 0.5f + 0.001f;
         preview.transform.position = point;
+
+        GridManager grid = placement.GetComponent<GridManager>();
+        int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
+        int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
+
+        bool inside = grid.IsInsideGrid(x, z);
+        highlight.SetActive(inside);
+
+        if (inside)
+        {
+            Vector3 cellCenter = grid.GetCellCenter(x, z);
+            cellCenter.y += 0.006f;
+            highlight.transform.position = cellCenter;
+        }
     }
 
     private bool TryGetPoint(Vector2 screenPosition, out Vector3 point)
