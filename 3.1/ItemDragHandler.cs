@@ -42,7 +42,10 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
             int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
-            placement.ReplaceCell(x, z, prefab);
+            if (prefab.CompareTag("Decoration"))
+                placement.PlaceDecoration(x, z, prefab);
+            else
+                placement.ReplaceCell(x, z, prefab);
         }
 
         if (preview != null)
@@ -64,7 +67,10 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
         int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
-        bool inside = grid.IsInsideGrid(x, z);
+        bool valid = prefab.CompareTag("Decoration")
+            ? placement.CanPlaceDecoration(x, z)
+            : grid.IsInsideGrid(x, z);
+
         Vector3 cellCenter = grid.GetCellCenter(x, z);
         cellCenter.y += 0.006f;
 
@@ -73,7 +79,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         if (highlightRenderer != null)
         {
-            Material material = inside ? validHighlightMaterial : invalidHighlightMaterial;
+            Material material = valid ? validHighlightMaterial : invalidHighlightMaterial;
 
             if (material != null)
                 highlightRenderer.sharedMaterial = material;
