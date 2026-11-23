@@ -33,7 +33,7 @@ public class GridPlacement : MonoBehaviour
             return;
 
         Vector3 center = grid.GetCellCenter(x, z);
-        center.y -= prefab.transform.localScale.y * 0.5f;
+        center.y += prefab.transform.localScale.y * 0.5f;
         Instantiate(prefab, center, Quaternion.identity, transform);
 
         PlayPlacementEffects(x, z);
