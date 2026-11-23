@@ -1,13 +1,29 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DeleteModeController : MonoBehaviour
 {
     public bool deleteMode;
+    public Image deleteButtonImage;
+    public Color normalColor = Color.white;
+    public Color activeColor = Color.red;
+
+    private void Awake()
+    {
+        UpdateButtonColor();
+    }
 
     public void ToggleDeleteMode()
     {
         deleteMode = !deleteMode;
+        UpdateButtonColor();
+    }
+
+    private void UpdateButtonColor()
+    {
+        if (deleteButtonImage != null)
+            deleteButtonImage.color = deleteMode ? activeColor : normalColor;
     }
 
     private void Update()
