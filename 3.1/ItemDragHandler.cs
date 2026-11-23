@@ -44,6 +44,8 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
             if (prefab.CompareTag("Decoration"))
                 placement.PlaceDecoration(x, z, prefab);
+            else if (prefab.CompareTag("Building"))
+                placement.PlaceBuildingBlock(x, z, prefab);
             else
                 placement.ReplaceCell(x, z, prefab);
         }
@@ -60,16 +62,29 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (preview == null || !TryGetPoint(screenPosition, out Vector3 point))
             return;
 
-        point.y += prefab.transform.localScale.y * 0.5f + 0.001f;
-        preview.transform.position = point;
-
         GridManager grid = placement.GetComponent<GridManager>();
         int x = Mathf.FloorToInt((point.x - grid.transform.position.x) / grid.cellSize);
         int z = Mathf.FloorToInt((point.z - grid.transform.position.z) / grid.cellSize);
 
-        bool valid = prefab.CompareTag("Decoration")
-            ? placement.CanPlaceDecoration(x, z)
-            : grid.IsInsideGrid(x, z);
+        bool valid;
+
+        if (prefab.CompareTag("Decoration"))
+        {
+            valid = placement.CanPlaceDecoration(x, z);
+            point.y += prefab.transform.localScale.y * 0.5f + 0.001f;
+        }
+        else if (prefab.CompareTag("Building"))
+        {
+            valid = placement.CanPlaceBuildingBlock(x, z);
+            point.y = placement.GetBuildingPlacementY(x, z, prefab);
+        }
+        else
+        {
+            valid = grid.IsInsideGrid(x, z);
+            point.y += prefab.transform.localScale.y * 0.5f + 0.001f;
+        }
+
+        preview.transform.position = point;
 
         Vector3 cellCenter = grid.GetCellCenter(x, z);
         cellCenter.y += 0.006f;
