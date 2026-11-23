@@ -4,6 +4,7 @@ using UnityEngine;
 public class GridPlacement : MonoBehaviour
 {
     public GameObject placementEffect;
+    public AudioSource placementAudio;
 
     private GridManager grid;
 
@@ -40,5 +41,8 @@ public class GridPlacement : MonoBehaviour
             effectPosition.y += 0.001f;
             Instantiate(placementEffect, effectPosition, Quaternion.identity);
         }
+
+        if (placementAudio != null)
+            placementAudio.Play();
     }
 }
