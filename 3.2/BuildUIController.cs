@@ -10,20 +10,14 @@ public class BuildUIController : MonoBehaviour
 
     void Start()
     {
-        constructionButton.onClick.AddListener(ShowConstruction);
-        decorationButton.onClick.AddListener(ShowDecoration);
-        ShowConstruction();
+        constructionButton.onClick.AddListener(() => ShowItems(true));
+        decorationButton.onClick.AddListener(() => ShowItems(false));
+        ShowItems(true);
     }
 
-    void ShowConstruction()
+    void ShowItems(bool construction)
     {
-        constructionItems.SetActive(true);
-        decorationItems.SetActive(false);
-    }
-
-    void ShowDecoration()
-    {
-        constructionItems.SetActive(false);
-        decorationItems.SetActive(true);
+        constructionItems.SetActive(construction);
+        decorationItems.SetActive(!construction);
     }
 }
