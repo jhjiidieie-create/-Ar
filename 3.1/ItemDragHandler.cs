@@ -47,7 +47,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (preview == null || !TryGetPoint(screenPosition, out Vector3 point))
             return;
 
-        point.y -= prefab.transform.localScale.y * 0.5f;
+        point.y += prefab.transform.localScale.y * 0.5f + 0.001f;
         preview.transform.position = point;
     }
 
