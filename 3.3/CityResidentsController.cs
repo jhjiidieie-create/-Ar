@@ -9,9 +9,11 @@ public class CityResidentsController : MonoBehaviour
     public float heightOffset;
 
     private GridManager grid;
-    private readonly List<GameObject> residents = new();
-    private readonly List<Transform> currentRoads = new();
-    private readonly List<Transform> targetRoads = new();
+    private GameObject[] roads;
+    private readonly List<GameObject> residents = new List<GameObject>();
+    private readonly List<Transform> currentRoads = new List<Transform>();
+    private readonly List<Transform> targetRoads = new List<Transform>();
+    private readonly List<Transform> previousRoads = new List<Transform>();
 
     private void Awake()
     {
@@ -25,7 +27,7 @@ public class CityResidentsController : MonoBehaviour
         if (residentPrefab == null || grid == null)
             return;
 
-        GameObject[] roads = GameObject.FindGameObjectsWithTag("Road");
+        roads = GameObject.FindGameObjectsWithTag("Road");
         if (roads.Length == 0)
             return;
 
@@ -34,10 +36,10 @@ public class CityResidentsController : MonoBehaviour
             Transform road = roads[Random.Range(0, roads.Length)].transform;
             Vector3 position = road.position + Vector3.up * heightOffset;
 
-            GameObject resident = Instantiate(residentPrefab, position, Quaternion.identity, transform);
-            residents.Add(resident);
+            residents.Add(Instantiate(residentPrefab, position, Quaternion.identity, transform));
             currentRoads.Add(road);
-            targetRoads.Add(GetNextRoad(road, null, roads));
+            targetRoads.Add(GetNextRoad(road, null));
+            previousRoads.Add(null);
         }
     }
 
@@ -49,20 +51,21 @@ public class CityResidentsController : MonoBehaviour
                 continue;
 
             Vector3 target = targetRoads[i].position + Vector3.up * heightOffset;
-            residents[i].transform.position = Vector3.MoveTowards(
-                residents[i].transform.position, target, moveSpeed * Time.deltaTime);
+            Transform resident = residents[i].transform;
 
-            Vector3 direction = target - residents[i].transform.position;
+            resident.position = Vector3.MoveTowards(resident.position, target, moveSpeed * Time.deltaTime);
+
+            Vector3 direction = target - resident.position;
             direction.y = 0;
 
             if (direction.sqrMagnitude > 0.000001f)
-                residents[i].transform.rotation = Quaternion.LookRotation(direction);
+                resident.rotation = Quaternion.LookRotation(direction);
 
-            if (Vector3.Distance(residents[i].transform.position, target) < 0.001f)
+            if (Vector3.Distance(resident.position, target) < 0.001f)
             {
+                previousRoads[i] = currentRoads[i];
                 currentRoads[i] = targetRoads[i];
-                GameObject[] roads = GameObject.FindGameObjectsWithTag("Road");
-                targetRoads[i] = GetNextRoad(currentRoads[i], null, roads);
+                targetRoads[i] = GetNextRoad(currentRoads[i], previousRoads[i]);
             }
         }
     }
@@ -76,14 +79,18 @@ public class CityResidentsController : MonoBehaviour
         residents.Clear();
         currentRoads.Clear();
         targetRoads.Clear();
+        previousRoads.Clear();
     }
 
-    private Transform GetNextRoad(Transform road, Transform previousRoad, GameObject[] roads)
+    private Transform GetNextRoad(Transform road, Transform previousRoad)
     {
-        List<Transform> neighbours = new();
+        List<Transform> neighbours = new List<Transform>();
 
         foreach (GameObject item in roads)
         {
+            if (item == null)
+                continue;
+
             Transform candidate = item.transform;
             float distance = Vector2.Distance(
                 new Vector2(road.position.x, road.position.z),
@@ -93,9 +100,9 @@ public class CityResidentsController : MonoBehaviour
                 neighbours.Add(candidate);
         }
 
-        if (neighbours.Count == 0)
-            return road;
+        if (neighbours.Count > 1)
+            neighbours.Remove(previousRoad);
 
-        return neighbours[Random.Range(0, neighbours.Count)];
+        return neighbours.Count == 0 ? road : neighbours[Random.Range(0, neighbours.Count)];
     }
 }
