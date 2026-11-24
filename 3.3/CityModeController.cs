@@ -12,4 +12,11 @@ public class CityModeController : MonoBehaviour
         cityModePanel.SetActive(true);
         residents.StartResidents();
     }
+
+    public void EditCity()
+    {
+        cityModePanel.SetActive(false);
+        buildModePanel.SetActive(true);
+        residents.StopResidents();
+    }
 }
