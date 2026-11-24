@@ -4,7 +4,6 @@ using UnityEngine;
 public class CityResidentsController : MonoBehaviour
 {
     public GameObject residentPrefab;
-    public int residentCount = 5;
     public float moveSpeed = 0.03f;
     public float heightOffset;
 
@@ -30,6 +29,8 @@ public class CityResidentsController : MonoBehaviour
         roads = GameObject.FindGameObjectsWithTag("Road");
         if (roads.Length == 0)
             return;
+
+        int residentCount = GameObject.FindGameObjectsWithTag("Building").Length;
 
         for (int i = 0; i < residentCount; i++)
         {
